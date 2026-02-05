@@ -70,6 +70,10 @@
             vertical-align: baseline;
             border-radius: 0.75rem;
         }
+        .border-bottom-dotted {
+             border-bottom: 2px dotted #ccc;
+             margin-bottom: 5px; /* Ajuste para alinhar os pontos com a base do texto */
+         }
 
     </style>
 @endsection
@@ -183,7 +187,7 @@
     <div class="container-fluid">
         @foreach ($collection->chunk(4) as $sublist)
             <div class="row">
-                @foreach($sublist as $enterprise)
+                @foreach($sublist as $row)
                     <div class="col-lg-3 col-sm-6">
                         <div class="card">
                             <div class="card-body">
@@ -191,40 +195,36 @@
                                     <div>
                                         <img
                                             src="{{ url('assets/media/image/user/women_avatar1.jpg') }}"
-                                            alt="{{ $enterprise->fantasia }}"
-                                            class="avatar-md rounded-circle img-thumbnail border-10 {{ $enterprise->getBorderClass() }}"
+                                            alt="{{ $row->enterprise->fantasia }}"
+                                            class="avatar-md rounded-circle img-thumbnail border-10 {{ $row->enterprise->getBorderClass() }}"
                                         />
                                     </div>
                                     <div class="flex-1 ms-3">
-                                        <h5 class="font-size-16 mb-1"><a href="{{ route('view_enterprise',['id' => $enterprise->id]) }}" class="text-dark">{{ $enterprise->fantasia }}</a></h5>
-                                        <span class="badge badge-soft-success mb-0">{{ $enterprise->getDocument() }}</span>
+                                        <h5 class="font-size-16 mb-1"><a href="{{ route('view_enterprise',['id' => $row->enterprise->id]) }}" class="text-dark">{{ $row->enterprise->fantasia }}</a></h5>
+                                        <span class="badge badge-soft-success mb-0">{{ $row->enterprise->getDocument() }}</span>
                                     </div>
                                 </div>
                                 <div class="mt-3 pt-1 d-flex flex-column gap-2">
                                     <p class="text-muted mb-0">
                                         <strong class="text-dark">Última Atualização:</strong>
-                                        {{ $enterprise->last_update->format('d/m/Y H:i') }}
-                                    </p>
-                                    <p class="text-muted mb-0">
-                                        <strong class="text-dark">Estado:</strong>
-                                        {{ $enterprise->state_name }}
-                                    </p>
-                                    <p class="text-muted mb-0">
-                                        <strong class="text-dark">Cidade:</strong>
-                                        {{ $enterprise->city_name }}
-                                    </p>
-                                    <p class="text-muted mb-0">
-                                        <strong class="text-dark">Telefone:</strong>
-                                        {{ $enterprise->phone }}
-                                    </p>
-                                    <p class="text-muted mb-0 text-truncate" title="{{ $enterprise->email }}">
-                                        <strong class="text-dark">Email:</strong>
-                                        {{ $enterprise->email }}
+                                        {{ $row->enterprise->last_update->format('d/m/Y H:i') }}
                                     </p>
                                 </div>
+                                <hr />
+                                <div class="mt-3 pt-1 d-flex flex-column gap-2">
+                                    @foreach($row->payments as $payment)
+                                        <p class="text-muted mb-0 d-flex align-items-baseline">
+                                        <strong class="text-dark">{{ $payment->description }}</strong>
+
+                                        <span class="flex-grow-1 mx-1 border-bottom-dotted"></span>
+
+                                        <span class="text-nowrap">{{ $payment->value }}</span>
+                                    </p>
+                                    @endforeach
+                                </div>
+                                <hr />
                                 <div class="d-flex gap-2 pt-4">
-                                    <a href="{{ route('view_enterprise',['id' => $enterprise->id]) }}" class="btn btn-primary btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-link"></i> &nbsp; Acessar Financeiro</a>
-                                    <a href="{{ route('view_enterprise_edt',['id' => $enterprise->id]) }}" class="btn btn-warning btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-edit"></i> &nbsp; Editar Informações</a>
+                                    <a href="{{ route('view_enterprise',['id' => $row->enterprise->id]) }}" class="btn btn-primary btn-block btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-link"></i> &nbsp; Acessar Financeiro</a>
                                 </div>
                             </div>
                         </div>
