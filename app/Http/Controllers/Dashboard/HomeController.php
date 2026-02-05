@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\DTOs\EnterpriseSupporViewDto;
+use App\DTOs\PaymentInfoDto;
 use App\Enterprise;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -30,21 +32,98 @@ class HomeController extends Controller
         $user = Auth::user();
         $enterprises = Auth::user()->enterprises;
 
-        $_totalSales = $enterprises->avg('total_sales');
-        $_totalCountSales = $enterprises->avg('amount_sales');
-        $_avgTicket = $enterprises->avg('ticket_medio');
-
+        $payloads = [];
         $formatter = new NumberFormatter('pt_BR', NumberFormatter::CURRENCY);
+
+        $allMethods = [];
+        $totalsByMethod = [];
+
+        foreach ($enterprises as $enterprise) {
+            $demo = $enterprise->demonstratives->first();
+            if ($demo) {
+                $data = json_decode($demo->payload, true);
+                $payments = array_get($data, 'pagamentos.pagamentosDia', []);
+                foreach ($payments as $pay) {
+                    $methodName = $pay['descricao'] ?? null;
+                    if ($methodName && !in_array($methodName, $allMethods)) {
+                        $allMethods[] = $methodName;
+                        $totalsByMethod[$methodName] = 0;
+                    }
+                }
+            }
+        }
+
+        sort($allMethods);
+
+        foreach ($enterprises as $enterprise) {
+            $demo = $enterprise->demonstratives->first();
+
+            $target = new EnterpriseSupporViewDto();
+            $target->enterprise = $enterprise;
+            $target->payments = [];
+            $target->totalSales =  0;
+            $target->totalCountSales =  0;
+            $target->avgTicket =  0;
+
+            if ($demo) {
+                $data = json_decode($demo->payload, true);
+
+
+                $target->totalSales =  array_get($data, 'lucrosPresumidos.relatorioVendas.concluidas.valorVendas', 0);
+                $target->totalCountSales =  array_get($data, 'lucrosPresumidos.relatorioVendas.concluidas.quantidadeVendas', 0);
+                $target->avgTicket =  array_get($data, 'lucrosPresumidos.relatorioVendas.concluidas.ticketMedio', 0);
+
+                $currentStorePayments = collect(array_get($data, 'pagamentos.pagamentosDia', []))
+                    ->pluck('value', 'descricao')
+                    ->all();
+
+                foreach ($allMethods as $method) {
+                    $payData = new PaymentInfoDto();
+                    $payData->description = $method;
+
+                    $_value = $currentStorePayments[$method] ?? 0;
+                    $totalsByMethod[$method] += $_value;
+                    $payData->value = $formatter->formatCurrency($_value, 'BRL');
+
+                    $target->payments[] = $payData;
+                }
+            } else {
+                foreach ($allMethods as $method) {
+                    $payData = new PaymentInfoDto();
+                    $payData->description = $method;
+                    $payData->value = $formatter->formatCurrency(0, 'BRL');
+                    $target->payments[] = $payData;
+                }
+            }
+
+            $payloads[] = $target;
+        }
+
+        $collection = collect($payloads);
+
+        $_totalSales = $collection->avg('totalSales');
+        $_totalCountSales = $collection->avg('totalCountSales');
+        $_avgTicket = $collection->avg('avgTicket');
+
         $totalSales = $formatter->formatCurrency($_totalSales, 'BRL');
         $avgTicket = $formatter->formatCurrency($_avgTicket, 'BRL');
         $totalCountSales = intval($_totalCountSales);
+
+        $formattedGlobalTotals = [];
+        foreach ($totalsByMethod as $method => $total) {
+            $formattedGlobalTotals[] = [
+                'description' => $method,
+                'value' => $formatter->formatCurrency($total, 'BRL')
+            ];
+        }
 
         return view('dashboard.home')
             ->with('user', $user)
             ->with('totalSales', $totalSales)
             ->with('totalCountSales', $totalCountSales)
+            ->with('formattedGlobalTotals', $formattedGlobalTotals)
             ->with('avgTicket', $avgTicket)
-            ->with('collection', $enterprises);
+            ->with('collection', $collection);
     }
 
 

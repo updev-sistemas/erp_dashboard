@@ -70,6 +70,24 @@
             vertical-align: baseline;
             border-radius: 0.75rem;
         }
+        .border-bottom-dotted {
+             border-bottom: 2px dotted #ccc;
+             margin-bottom: 5px; /* Ajuste para alinhar os pontos com a base do texto */
+         }
+
+        /* Estilo para tornar as setas do carrossel visíveis em fundos claros */
+        .filter-dark {
+            filter: invert(1) grayscale(100) brightness(0.5);
+        }
+
+        /* Garante que o carrossel tenha uma altura mínima para não "pular" entre itens */
+        .carousel-item {
+            min-height: 80px;
+        }
+
+        .carousel-control-prev, .carousel-control-next {
+            width: 20%; /* Diminui a área de clique para não sobrepor o texto */
+        }
 
     </style>
 @endsection
@@ -108,72 +126,69 @@
     </div>
 
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-4 col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <div>
-                                <p class="text-muted">Vendas Hoje</p>
-                                <h2  id="totalVendas2" class="font-weight-bold"><span id="lucrosPresumidosValorVendas">{{ $totalSales }}</span></h2>
+        <div class="row align-items-stretch"> <div class="col-lg-6 mb-4">
+                <div class="card h-100 bg-primary text-white border-0 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <div class="text-center">
+                            <p class="text-white-50 mb-4">Consolidado por Método (Rede)</p>
+
+                            <div id="carouselTotals" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    @foreach($formattedGlobalTotals as $index => $total)
+                                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                            <h1 class="display-4 font-weight-bold mb-0">{{ $total['value'] }}</h1>
+                                            <p class="text-uppercase tracking-wider">{{ $total['description'] }}</p>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <a class="carousel-control-prev" href="#carouselTotals" data-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </a>
+                                <a class="carousel-control-next" href="#carouselTotals" data-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </a>
                             </div>
-                            <div>
-                                <figure class="avatar">
-                                    <img src="{{ url('assets/media/image/user/money_bag.png') }}" alt="Valor de Vendas">
-                                </figure>
+
+                            <div class="mt-4">
+                                <i class="fa fa-university fa-3x mb-3 opacity-2"></i>
+                                <p class="small mb-0">Soma total de todas as unidades</p>
                             </div>
-                        </div>
-                        <div class="d-inline-flex align-items-center">
-                            <span class="text-success d-inline-flex align-items-center mr-2">
-                                <p  id="a" class="text-muted">Média das Lojas</p>
-                            </span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <div>
-                                <p class="text-muted">Qtd de vendas Hoje</p>
-                                <h2 id="quantidadeVendas2" class="font-weight-bold"><span id="lucrosPresumidosQuantidadeVendas">{{ $totalCountSales }}</span></h2>
-                            </div>
-                            <div>
-                                <figure class="avatar">
-                                    <img src="{{ url('assets/media/image/user/quanVendas.png') }}">
-                                </figure>
-                            </div>
+
+            <div class="col-lg-6 mb-4 d-flex flex-column">
+
+                <div class="card flex-fill mb-3 border-0 shadow-sm">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted mb-1">Vendas Hoje</p>
+                            <h3 class="font-weight-bold mb-0">{{ $totalSales }}</h3>
                         </div>
-                        <div class="d-inline-flex align-items-center">
-                            <span class="text-danger d-inline-flex align-items-center mr-2">
-                                <p  id="b" class="text-muted">Média das Lojas</p>
-                            </span>
-                        </div>
+                        <img src="{{ url('assets/media/image/user/money_bag.png') }}" width="45">
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <div>
-                                <p class="text-muted">Ticket Médio</p>
-                                <h2 id="meusLucros2" class="font-weight-bold"><span id="lucrosPresumidosTotalLucros">{{ $avgTicket }}</span></h2>
-                            </div>
-                            <div>
-                                <figure class="avatar">
-                                    <img src="{{ url('assets/media/image/user/lucros.png') }}">
-                                </figure>
-                            </div>
+
+                <div class="card flex-fill mb-3 border-0 shadow-sm">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted mb-1">Qtd de Vendas Hoje</p>
+                            <h3 class="font-weight-bold mb-0">{{ $totalCountSales }}</h3>
                         </div>
-                        <div class="d-inline-flex align-items-center">
-                            <span class="text-danger d-inline-flex align-items-center mr-2">
-                                <p  id="c" class="text-muted">Média das Lojas</p>
-                            </span>
-                        </div>
+                        <img src="{{ url('assets/media/image/user/quanVendas.png') }}" width="45">
                     </div>
                 </div>
+
+                <div class="card flex-fill mb-0 border-0 shadow-sm"> <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="text-muted mb-1">Ticket Médio</p>
+                            <h3 class="font-weight-bold mb-0">{{ $avgTicket }}</h3>
+                        </div>
+                        <img src="{{ url('assets/media/image/user/lucros.png') }}" width="45">
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -183,7 +198,7 @@
     <div class="container-fluid">
         @foreach ($collection->chunk(4) as $sublist)
             <div class="row">
-                @foreach($sublist as $enterprise)
+                @foreach($sublist as $row)
                     <div class="col-lg-3 col-sm-6">
                         <div class="card">
                             <div class="card-body">
@@ -191,40 +206,36 @@
                                     <div>
                                         <img
                                             src="{{ url('assets/media/image/user/women_avatar1.jpg') }}"
-                                            alt="{{ $enterprise->fantasia }}"
-                                            class="avatar-md rounded-circle img-thumbnail border-10 {{ $enterprise->getBorderClass() }}"
+                                            alt="{{ $row->enterprise->fantasia }}"
+                                            class="avatar-md rounded-circle img-thumbnail border-10 {{ $row->enterprise->getBorderClass() }}"
                                         />
                                     </div>
                                     <div class="flex-1 ms-3">
-                                        <h5 class="font-size-16 mb-1"><a href="{{ route('view_enterprise',['id' => $enterprise->id]) }}" class="text-dark">{{ $enterprise->fantasia }}</a></h5>
-                                        <span class="badge badge-soft-success mb-0">{{ $enterprise->getDocument() }}</span>
+                                        <h5 class="font-size-16 mb-1"><a href="{{ route('view_enterprise',['id' => $row->enterprise->id]) }}" class="text-dark">{{ $row->enterprise->fantasia }}</a></h5>
+                                        <span class="badge badge-soft-success mb-0">{{ $row->enterprise->getDocument() }}</span>
                                     </div>
                                 </div>
                                 <div class="mt-3 pt-1 d-flex flex-column gap-2">
                                     <p class="text-muted mb-0">
                                         <strong class="text-dark">Última Atualização:</strong>
-                                        {{ $enterprise->last_update->format('d/m/Y H:i') }}
-                                    </p>
-                                    <p class="text-muted mb-0">
-                                        <strong class="text-dark">Estado:</strong>
-                                        {{ $enterprise->state_name }}
-                                    </p>
-                                    <p class="text-muted mb-0">
-                                        <strong class="text-dark">Cidade:</strong>
-                                        {{ $enterprise->city_name }}
-                                    </p>
-                                    <p class="text-muted mb-0">
-                                        <strong class="text-dark">Telefone:</strong>
-                                        {{ $enterprise->phone }}
-                                    </p>
-                                    <p class="text-muted mb-0 text-truncate" title="{{ $enterprise->email }}">
-                                        <strong class="text-dark">Email:</strong>
-                                        {{ $enterprise->email }}
+                                        {{ $row->enterprise->last_update->format('d/m/Y H:i') }}
                                     </p>
                                 </div>
+                                <hr />
+                                <div class="mt-3 pt-1 d-flex flex-column gap-2">
+                                    @foreach($row->payments as $payment)
+                                        <p class="text-muted mb-0 d-flex align-items-baseline">
+                                        <strong class="text-dark">{{ $payment->description }}</strong>
+
+                                        <span class="flex-grow-1 mx-1 border-bottom-dotted"></span>
+
+                                        <span class="text-nowrap">{{ $payment->value }}</span>
+                                    </p>
+                                    @endforeach
+                                </div>
+                                <hr />
                                 <div class="d-flex gap-2 pt-4">
-                                    <a href="{{ route('view_enterprise',['id' => $enterprise->id]) }}" class="btn btn-primary btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-link"></i> &nbsp; Acessar Financeiro</a>
-                                    <a href="{{ route('view_enterprise_edt',['id' => $enterprise->id]) }}" class="btn btn-warning btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-edit"></i> &nbsp; Editar Informações</a>
+                                    <a href="{{ route('view_enterprise',['id' => $row->enterprise->id]) }}" class="btn btn-primary btn-block btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-link"></i> &nbsp; Acessar Financeiro</a>
                                 </div>
                             </div>
                         </div>
