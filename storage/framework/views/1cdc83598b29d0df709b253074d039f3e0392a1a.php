@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('head')
+<?php $__env->startSection('head'); ?>
     <meta http-equiv="refresh" content="300" />
     <style type="text/css">
         .card {
@@ -72,18 +70,18 @@
         }
 
     </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('pageTitle')
-@endsection
+<?php $__env->startSection('pageTitle'); ?>
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <div class="page-header d-flex justify-content-between align-items-center mb-4">
 
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-decoration-none">Início</a></li>
+                <li class="breadcrumb-item"><a href="<?php echo e(url('/')); ?>" class="text-decoration-none">Início</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
             </ol>
         </nav>
@@ -115,11 +113,11 @@
                         <div class="d-flex justify-content-between mb-3">
                             <div>
                                 <p class="text-muted">Vendas Hoje</p>
-                                <h2  id="totalVendas2" class="font-weight-bold"><span id="lucrosPresumidosValorVendas">{{ $totalSales }}</span></h2>
+                                <h2  id="totalVendas2" class="font-weight-bold"><span id="lucrosPresumidosValorVendas"><?php echo e($totalSales); ?></span></h2>
                             </div>
                             <div>
                                 <figure class="avatar">
-                                    <img src="{{ url('assets/media/image/user/money_bag.png') }}" alt="Valor de Vendas">
+                                    <img src="<?php echo e(url('assets/media/image/user/money_bag.png')); ?>" alt="Valor de Vendas">
                                 </figure>
                             </div>
                         </div>
@@ -137,11 +135,11 @@
                         <div class="d-flex justify-content-between mb-3">
                             <div>
                                 <p class="text-muted">Qtd de vendas Hoje</p>
-                                <h2 id="quantidadeVendas2" class="font-weight-bold"><span id="lucrosPresumidosQuantidadeVendas">{{ $totalCountSales }}</span></h2>
+                                <h2 id="quantidadeVendas2" class="font-weight-bold"><span id="lucrosPresumidosQuantidadeVendas"><?php echo e($totalCountSales); ?></span></h2>
                             </div>
                             <div>
                                 <figure class="avatar">
-                                    <img src="{{ url('assets/media/image/user/quanVendas.png') }}">
+                                    <img src="<?php echo e(url('assets/media/image/user/quanVendas.png')); ?>">
                                 </figure>
                             </div>
                         </div>
@@ -159,11 +157,11 @@
                         <div class="d-flex justify-content-between mb-3">
                             <div>
                                 <p class="text-muted">Ticket Médio</p>
-                                <h2 id="meusLucros2" class="font-weight-bold"><span id="lucrosPresumidosTotalLucros">{{ $avgTicket }}</span></h2>
+                                <h2 id="meusLucros2" class="font-weight-bold"><span id="lucrosPresumidosTotalLucros"><?php echo e($avgTicket); ?></span></h2>
                             </div>
                             <div>
                                 <figure class="avatar">
-                                    <img src="{{ url('assets/media/image/user/lucros.png') }}">
+                                    <img src="<?php echo e(url('assets/media/image/user/lucros.png')); ?>">
                                 </figure>
                             </div>
                         </div>
@@ -181,61 +179,68 @@
     <hr />
 
     <div class="container-fluid">
-        @foreach ($collection->chunk(4) as $sublist)
+        <?php $__currentLoopData = $collection->chunk(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sublist): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <div class="row">
-                @foreach($sublist as $enterprise)
+                <?php $__currentLoopData = $sublist; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $enterprise): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="col-lg-3 col-sm-6">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div>
                                         <img
-                                            src="{{ url('assets/media/image/user/women_avatar1.jpg') }}"
-                                            alt="{{ $enterprise->fantasia }}"
-                                            class="avatar-md rounded-circle img-thumbnail border-10 {{ $enterprise->getBorderClass() }}"
+                                            src="<?php echo e(url('assets/media/image/user/women_avatar1.jpg')); ?>"
+                                            alt="<?php echo e($enterprise->fantasia); ?>"
+                                            class="avatar-md rounded-circle img-thumbnail border-10 <?php echo e($enterprise->getBorderClass()); ?>"
                                         />
                                     </div>
                                     <div class="flex-1 ms-3">
-                                        <h5 class="font-size-16 mb-1"><a href="{{ route('view_enterprise',['id' => $enterprise->id]) }}" class="text-dark">{{ $enterprise->fantasia }}</a></h5>
-                                        <span class="badge badge-soft-success mb-0">{{ $enterprise->getDocument() }}</span>
+                                        <h5 class="font-size-16 mb-1"><a href="<?php echo e(route('view_enterprise',['id' => $enterprise->id])); ?>" class="text-dark"><?php echo e($enterprise->fantasia); ?></a></h5>
+                                        <span class="badge badge-soft-success mb-0"><?php echo e($enterprise->getDocument()); ?></span>
                                     </div>
                                 </div>
                                 <div class="mt-3 pt-1 d-flex flex-column gap-2">
                                     <p class="text-muted mb-0">
                                         <strong class="text-dark">Última Atualização:</strong>
-                                        {{ $enterprise->last_update->format('d/m/Y H:i') }}
+                                        <?php echo e($enterprise->last_update->format('d/m/Y H:i')); ?>
+
                                     </p>
                                     <p class="text-muted mb-0">
                                         <strong class="text-dark">Estado:</strong>
-                                        {{ $enterprise->state_name }}
+                                        <?php echo e($enterprise->state_name); ?>
+
                                     </p>
                                     <p class="text-muted mb-0">
                                         <strong class="text-dark">Cidade:</strong>
-                                        {{ $enterprise->city_name }}
+                                        <?php echo e($enterprise->city_name); ?>
+
                                     </p>
                                     <p class="text-muted mb-0">
                                         <strong class="text-dark">Telefone:</strong>
-                                        {{ $enterprise->phone }}
+                                        <?php echo e($enterprise->phone); ?>
+
                                     </p>
-                                    <p class="text-muted mb-0 text-truncate" title="{{ $enterprise->email }}">
+                                    <p class="text-muted mb-0 text-truncate" title="<?php echo e($enterprise->email); ?>">
                                         <strong class="text-dark">Email:</strong>
-                                        {{ $enterprise->email }}
+                                        <?php echo e($enterprise->email); ?>
+
                                     </p>
                                 </div>
                                 <div class="d-flex gap-2 pt-4">
-                                    <a href="{{ route('view_enterprise',['id' => $enterprise->id]) }}" class="btn btn-primary btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-link"></i> &nbsp; Acessar Financeiro</a>
-                                    <a href="{{ route('view_enterprise_edt',['id' => $enterprise->id]) }}" class="btn btn-warning btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-edit"></i> &nbsp; Editar Informações</a>
+                                    <a href="<?php echo e(route('view_enterprise',['id' => $enterprise->id])); ?>" class="btn btn-primary btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-link"></i> &nbsp; Acessar Financeiro</a>
+                                    <a href="<?php echo e(route('view_enterprise_edt',['id' => $enterprise->id])); ?>" class="btn btn-warning btn-sm h-25" style="color:#FFFFFF;"><i class="fa fa-edit"></i> &nbsp; Editar Informações</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

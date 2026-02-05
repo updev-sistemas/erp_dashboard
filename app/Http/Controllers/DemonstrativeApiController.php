@@ -109,6 +109,80 @@ class DemonstrativeApiController extends Controller
         }
     }
 
+    public function registerWithValidationOld($id, Request $request)
+    {
+        try {
+            $uuid = decrypt($id);
+
+            $enterprise = Enterprise::query()->where('uuid', '=', $uuid)->firstOrFail();
+
+            if ($enterprise == null) {
+                throw new \Exception("Empresa não foi localizada.");
+            }
+
+            if ($enterprise->user->id_status == UserStatusEnum::SUSPENDED) {
+                throw new \Exception("Conta suspensa, por favor, entre em contato com o suporte técnico.");
+            }
+
+            $data = $request->all();
+            $ph = new PayloadHandler();
+            $objectMounted = $ph->handler($data);
+
+            if ($objectMounted == null) {
+                return response([
+                    'status' => 'Error',
+                    'payload' => $data,
+                    'Errors' => $ph->getErrors()
+                ], 400);
+            }
+            else {
+                $target = $objectMounted->getLucrosPresumidos()->getRelatorioVendas()->getConcluidas();
+                $payloadStr = json_encode($objectMounted);
+
+                $demostrative = Demostrative::query()->where('enterprise_id', '=', $enterprise->id)->first();
+                if ($demostrative == null) {
+                    $dataToSave = [
+                        'payload' => $payloadStr,
+                        'enterprise_id' => $enterprise->id
+                    ];
+
+
+                    $demostrative = new Demostrative($dataToSave);
+                    $demostrative->save();
+
+
+                    $enterprise->total_sales = $target->getValorVendas();
+                    $enterprise->amount_sales = $target->getQuantidadeVendas();
+                    $enterprise->ticket_medio = $target->getTicketMedio();
+
+                    $enterprise->last_update = Carbon::now();
+                    $enterprise->update();
+
+                } else {
+                    $now = Carbon::now();
+
+                    $demostrative->payload = $payloadStr;
+                    $demostrative->updated_at = $now;
+                    $demostrative->update();
+
+                    $enterprise->total_sales = $target->getValorVendas();
+                    $enterprise->amount_sales = $target->getQuantidadeVendas();
+                    $enterprise->ticket_medio = $target->getTicketMedio();
+                    $enterprise->last_update = $now;
+
+                    $enterprise->update();
+                }
+
+                return response(['status' => 'Atualizado', 'return' => 200], 200);
+            }
+        } catch (\Exception $e) {
+            logger('Ocorreu um erro durante a integração');
+            logger($e);
+            logger($id);
+            logger($request->all());
+            return response(['status' => 'ERROR', 'Message' => $e->getMessage(), 'return' => $e->getCode()], 400);
+        }
+    }
 
     public function registerWithValidation($id, Request $request)
     {
@@ -128,7 +202,7 @@ class DemonstrativeApiController extends Controller
             $data = $request->all();
             $ph = new PayloadHandler();
             $objectMounted = $ph->handler($data);
-            
+
             if ($objectMounted == null) {
                 return response([
                     'status' => 'Error',

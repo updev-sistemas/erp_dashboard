@@ -9,7 +9,7 @@ use App\Utils\Enumerables\UserTypeEnum;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class UserController extends Controller
+class AdminUserController extends Controller
 {
     /**
      * Create a new controller instance.
