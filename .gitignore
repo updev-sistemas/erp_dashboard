@@ -33,3 +33,6 @@ yarn-error.log
 /storage/framework/sessions/.gitignore
 /storage/framework/views/.gitignore
 /storage/logs/.gitignore
+/storage/framework/views/
+/storage/framework/cache/
+/storage/framework/sessions/
