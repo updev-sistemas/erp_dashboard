@@ -1,21 +1,21 @@
 <!doctype html>
 <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Neway Dashboard - Entrar</title>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Neway Dashboard - Entrar</title>
 
         <!-- Favicon -->
-        <link rel="shortcut icon" href="{{ url('assets/media/image/favicon.png') }}"/>
+    <link rel="shortcut icon" href="{{ url('assets/media/image/favicon.png') }}"/>
 
         <!-- Plugin styles -->
-        <link rel="stylesheet" href="{{ url('vendors/bundle.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('vendors/bundle.css') }}" type="text/css" />
 
         <!-- App styles -->
-        <link rel="stylesheet" href="{{ url('assets/css/app.min.css') }}" type="text/css" />
-    </head>
-    <body class="form-membership">
+    <link rel="stylesheet" href="{{ url('assets/css/app.min.css') }}" type="text/css" />
+</head>
+<body class="form-membership">
 
     <!-- begin::preloader-->
     <div class="preloader">
@@ -27,6 +27,9 @@
 
         @yield('content')
 
+        <div>
+            <p class="mb-40 badge badge-info badge-pill">Versão {{ config('app.version', '0.0.0') }}</p>
+        </div>
     </div>
 
     <!-- Plugin scripts -->
@@ -34,5 +37,5 @@
 
     <!-- App scripts -->
     <script src="{{ url('assets/js/app.min.js') }}"></script>
-    </body>
+</body>
 </html>
