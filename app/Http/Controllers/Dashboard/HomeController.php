@@ -36,6 +36,8 @@ class HomeController extends Controller
         $formatter = new NumberFormatter('pt_BR', NumberFormatter::CURRENCY);
 
         $allMethods = [];
+        $totalsByMethod = [];
+
         foreach ($enterprises as $enterprise) {
             $demo = $enterprise->demonstratives->first();
             if ($demo) {
@@ -45,6 +47,7 @@ class HomeController extends Controller
                     $methodName = $pay['descricao'] ?? null;
                     if ($methodName && !in_array($methodName, $allMethods)) {
                         $allMethods[] = $methodName;
+                        $totalsByMethod[$methodName] = 0;
                     }
                 }
             }
@@ -79,6 +82,7 @@ class HomeController extends Controller
                     $payData->description = $method;
 
                     $_value = $currentStorePayments[$method] ?? 0;
+                    $totalsByMethod[$method] += $_value;
                     $payData->value = $formatter->formatCurrency($_value, 'BRL');
 
                     $target->payments[] = $payData;
@@ -105,11 +109,19 @@ class HomeController extends Controller
         $avgTicket = $formatter->formatCurrency($_avgTicket, 'BRL');
         $totalCountSales = intval($_totalCountSales);
 
+        $formattedGlobalTotals = [];
+        foreach ($totalsByMethod as $method => $total) {
+            $formattedGlobalTotals[] = [
+                'description' => $method,
+                'value' => $formatter->formatCurrency($total, 'BRL')
+            ];
+        }
 
         return view('dashboard.home')
             ->with('user', $user)
             ->with('totalSales', $totalSales)
             ->with('totalCountSales', $totalCountSales)
+            ->with('formattedGlobalTotals', $formattedGlobalTotals)
             ->with('avgTicket', $avgTicket)
             ->with('collection', $collection);
     }
