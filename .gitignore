@@ -12,3 +12,27 @@ npm-debug.log
 yarn-error.log
 .env
 .phpunit.result.cache
+
+# =========================
+# Laravel Storage (correto)
+# =========================
+/storage/*
+!/storage/app
+!/storage/app/public
+!/storage/framework
+!/storage/framework/cache
+!/storage/framework/sessions
+!/storage/framework/views
+!/storage/logs
+
+# Mantém as pastas vazias versionadas
+/storage/app/.gitignore
+/storage/app/public/.gitignore
+/storage/framework/.gitignore
+/storage/framework/cache/.gitignore
+/storage/framework/sessions/.gitignore
+/storage/framework/views/.gitignore
+/storage/logs/.gitignore
+/storage/framework/views/
+/storage/framework/cache/
+/storage/framework/sessions/

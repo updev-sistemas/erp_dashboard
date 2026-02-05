@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
 
-class EnterpriseController extends Controller
+class AdminEnterpriseController extends Controller
 {
     /**
      * Create a new controller instance.
