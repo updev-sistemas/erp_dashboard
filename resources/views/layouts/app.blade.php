@@ -241,7 +241,10 @@
 
             <!-- begin::footer -->
             <footer class="content-footer">
-                <div>© {{ date('Y') }} Orbit Automação  - <a target="_blank">Tecnologia</a></div>
+                <div>
+                    © {{ date('Y') }} Orbit Automação  - <a target="_blank">Tecnologia</a> |
+                    <p class="mb-40 badge badge-info badge-pill">Versão {{ config('app.version', '0.0.0') }}</p>
+                </div>
                 <div>
                     <nav class="nav">
                         <a href="https://www.orbitautomacao.com.br/" class="nav-link">Fale conosco</a>
